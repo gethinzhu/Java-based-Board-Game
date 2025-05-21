@@ -75,8 +75,12 @@ public class GameImpl implements Game {
     // or the position is out of bounds
     @Override
     public void makeMove(Move move) {  
+        // If the game is over, do nothing
+        if (isOver()) {
+            return;
+        }
         if (move == null) {
-            throw new IllegalArgumentException("The move is invalid");
+            throw new IllegalArgumentException("Move cannot be null");
         }
         int row = move.getRow(), col = move.getCol();
         if (row < 0 || row >= grid.getSize()) {
@@ -87,7 +91,7 @@ public class GameImpl implements Game {
             throw new IllegalArgumentException("The position is already occupied");
         }
         grid.setPiece(move.getRow(), move.getCol(), currentPlayer);
-       PieceColour LastPlayer = currentPlayer;
+       PieceColour lastPlayer = currentPlayer;
         // Switch player from white to black or vice versa
         if (currentPlayer == PieceColour.WHITE) {
             currentPlayer = PieceColour.BLACK;
@@ -95,8 +99,8 @@ public class GameImpl implements Game {
             currentPlayer = PieceColour.WHITE;
         }
         // Check if the last player has won the game
-        if (PathFinder.topToBottom(grid, LastPlayer) || PathFinder.leftToRight(grid, LastPlayer)) {
-            winner = LastPlayer;
+        if (PathFinder.topToBottom(grid, lastPlayer) || PathFinder.leftToRight(grid, lastPlayer)) {
+            winner = lastPlayer;
         }
         
     }
