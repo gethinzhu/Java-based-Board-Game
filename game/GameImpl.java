@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.List;
 
 public class GameImpl implements Game {
-    //private boolean isOver;
     private final Grid grid;
     private PieceColour currentPlayer;
     private PieceColour winner;
@@ -16,7 +15,6 @@ public class GameImpl implements Game {
         }
         this.grid = new GridImpl(size);
         this.currentPlayer = PieceColour.WHITE;
-        //this.isOver = false;
         this.winner = null;
     }
 
@@ -49,7 +47,7 @@ public class GameImpl implements Game {
     public PieceColour currentPlayer() {
         return currentPlayer;
     }
-
+ 
     // Gets a Collection of all valid moves for the current player
     // See https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Collection.html
     // Note that ArrayList implements Collection
@@ -76,31 +74,29 @@ public class GameImpl implements Game {
     // An invalid move is one where the position is already occupied
     // or the position is out of bounds
     @Override
-    public void makeMove(Move move) {
-        
+    public void makeMove(Move move) {  
         if (move == null) {
-            throw new IllegalArgumentException("Move can not be null");
+            throw new IllegalArgumentException("The move is invalid");
         }
         int row = move.getRow(), col = move.getCol();
         if (row < 0 || row >= grid.getSize()) {
-            throw new IllegalArgumentException("Position out of bounds");
+            throw new IllegalArgumentException("The position is out of bounds");
         } else if(col < 0 || col >= grid.getSize()) {
-            throw new IllegalArgumentException("Position out of bounds");
+            throw new IllegalArgumentException("The position is out of bounds");
         } else if (grid.getPiece(row, col) != PieceColour.NONE) {
-            throw new IllegalArgumentException("Position already occupied");
+            throw new IllegalArgumentException("The position is already occupied");
         }
         grid.setPiece(move.getRow(), move.getCol(), currentPlayer);
+       PieceColour LastPlayer = currentPlayer;
         // Switch player from white to black or vice versa
         if (currentPlayer == PieceColour.WHITE) {
             currentPlayer = PieceColour.BLACK;
         } else {
             currentPlayer = PieceColour.WHITE;
         }
-        // 融合 updateWinner 逻辑
-        if (PathFinder.topToBottom(grid, PieceColour.WHITE)) {
-            winner = PieceColour.WHITE;
-        } else if (PathFinder.leftToRight(grid, PieceColour.BLACK)) {
-            winner = PieceColour.BLACK;
+        // Check if the last player has won the game
+        if (PathFinder.topToBottom(grid, LastPlayer) || PathFinder.leftToRight(grid, LastPlayer)) {
+            winner = LastPlayer;
         }
         
     }
@@ -112,7 +108,7 @@ public class GameImpl implements Game {
     // by modifying the grid returned
     @Override
     public Grid getGrid() {
-        return grid;
+        return grid.copy();
     }
 
     // Returns a copy of the game
@@ -128,7 +124,7 @@ public class GameImpl implements Game {
             for (int j = 0; j < grid.getSize(); j++) {
                 PieceColour piece = grid.getPiece(i, j);
                 if (piece != PieceColour.NONE) {
-                    copy.grid.setPiece(i, j, piece);
+                    copy.getGrid().setPiece(i, j, piece);
                 }
             }
         }
