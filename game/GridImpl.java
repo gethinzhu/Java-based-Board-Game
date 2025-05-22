@@ -78,15 +78,12 @@ public class GridImpl implements Grid {
         StringBuilder stringbuilder = new StringBuilder();
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                switch (grid[i][j]) {
-                    case WHITE:
-                        stringbuilder.append('W');
-                        break;
-                    case BLACK:
-                        stringbuilder.append('B');
-                        break;
-                    default:
-                        stringbuilder.append('.');
+                if (grid[i][j] == PieceColour.WHITE) {
+                    stringbuilder.append('W');
+                } else if (grid[i][j] == PieceColour.BLACK) {
+                    stringbuilder.append('B');
+                } else {
+                    stringbuilder.append('.');
                 }
             }
             stringbuilder.append('\n');

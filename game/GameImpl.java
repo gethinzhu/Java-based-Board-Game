@@ -22,7 +22,7 @@ public class GameImpl implements Game {
     // The game is over when there is a winner or there are no more moves (a draw)
     @Override
     public boolean isOver() {
-        return winner != null || getMoves().isEmpty();
+        return (winner != null) || (getMoves().isEmpty());
     }
 
     // The colour of the winner.
