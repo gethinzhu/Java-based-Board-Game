@@ -79,10 +79,10 @@ public class GameImpl implements Game {
             return;
         }
         // Throws IllegalArgumentException if the move is null
-        int row = move.getRow(), col = move.getCol();
         if (move == null) {
             throw new IllegalArgumentException("Move cannot be null");
         }
+        int row = move.getRow(), col = move.getCol();
         if (row < 0 || row >= grid.getSize()) {
             throw new IllegalArgumentException("The position is out of bounds");
         } else if(col < 0 || col >= grid.getSize()) {
