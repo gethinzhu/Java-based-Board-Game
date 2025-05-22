@@ -4,6 +4,7 @@ public class GridImpl implements Grid {
     private final int size;
     private final PieceColour[][] grid;
 
+    // This is the constructor which initializes the size X size grid
     public GridImpl(int size) {
         if (size < 1) {
             throw new IllegalArgumentException("The length of one side of the square should not less than 1");
@@ -12,22 +13,20 @@ public class GridImpl implements Grid {
         this.grid = new PieceColour[size][size];
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                grid[i][j] = PieceColour.NONE;
+                grid[i][j] = PieceColour.NONE; //Initialize the grid with NONE
             }
         }
     }
 
-    // Returns the size of the grid
-    // The grid is always a square
-    // This is the length of one side of the square
+    // Returns the length of one side of the square (or so called size )
     @Override
     public int getSize() {
         return size;
     }
     
     // Returns the piece at the given row and column
+    // Throws IllegalArgumentException if the row or column is an negative interger, zero or out of bounds
     // Should return PieceColour.NONE if the position is empty
-    // Throws IllegalArgumentException if the row or column is out of bounds
     @Override
     public PieceColour getPiece(int row, int col) {
         if (row < 0 || col < 0) {
@@ -36,10 +35,14 @@ public class GridImpl implements Grid {
         if (row >= size ||col >= size) {
             throw new IllegalArgumentException("Row or column is out of bounds");
         }
-        return grid[row][col];
+        if (grid[row][col] == null) {
+            return PieceColour.NONE;
+        }
+        return grid[row][col]; 
     }
 
     // Sets the piece at the given row and column
+    // Throws IllegalArgumentException if the row or column is an negative interger, zero or out of bounds
     // Throws IllegalArgumentException if the piece is not a valid colour
     @Override
     public void setPiece(int row, int col, PieceColour piece) {
@@ -55,20 +58,17 @@ public class GridImpl implements Grid {
         grid[row][col] = piece;
     }
 
-    // Returns a copy of the grid
-    // Note that this is should be a deep copy
-    // Which means that the grid returned should be a new object
-    // And there is no way to modify the internal state of this grid
-    // by modifying the grid returned
+    // Returns a deep copy of the grid
+    // The grid returned should be a new object
     @Override
     public Grid copy() {
-        GridImpl copy = new GridImpl(size);
+        GridImpl deepcopy = new GridImpl(size);
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                copy.setPiece(i, j, grid[i][j]); // copy the grid
+                deepcopy.setPiece(i, j, grid[i][j]); // copy the grid
             }
         }
-        return copy;
+        return deepcopy;
     }
 
     // Returns a string representation of the grid
@@ -82,11 +82,11 @@ public class GridImpl implements Grid {
                     stringbuilder.append('W');
                 } else if (grid[i][j] == PieceColour.BLACK) {
                     stringbuilder.append('B');
-                } else {
+                } else{
                     stringbuilder.append('.');
                 }
             }
-            stringbuilder.append('\n');
+            stringbuilder.append('\n'); //start a new row when grid[i] ends
         }
         return stringbuilder.toString();
     }
