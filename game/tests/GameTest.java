@@ -170,6 +170,7 @@ public class GameTest extends Test {
         expect(PieceColour.BLACK, copyGame3.getGrid().getPiece(0, 1)); // Copy changed
         expect(PieceColour.WHITE, copyGame3.currentPlayer()); // Copy state updated
         expect(PieceColour.BLACK, copyGame2.currentPlayer()); // Original state unchanged
+        
         checkAllTestsPassed();
     }
 }

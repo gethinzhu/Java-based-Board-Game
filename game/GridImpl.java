@@ -87,7 +87,7 @@ public class GridImpl implements Grid {
                     break;
             }
             }
-            stringbuilder.append('\n'); //start a new row when grid[i] ends
+            stringbuilder.append('\n'); //start a new line after finishing row i
         }
         return stringbuilder.toString();
     }
