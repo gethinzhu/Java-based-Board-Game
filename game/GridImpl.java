@@ -4,13 +4,14 @@ public class GridImpl implements Grid {
     private final int size;
     private final PieceColour[][] grid;
 
-    // This is the constructor which initializes the size X size grid
+    // Constructor
     public GridImpl(int size) {
         if (size < 1) {
             throw new IllegalArgumentException("The length of one side of the square should not less than 1");
         }
         this.size = size;
         this.grid = new PieceColour[size][size];
+        //Initializes the size x size grid
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 grid[i][j] = PieceColour.NONE; //Initialize the grid with NONE
@@ -18,15 +19,13 @@ public class GridImpl implements Grid {
         }
     }
 
-    // Returns the length of one side of the square (or so called size )
+    // Returns the size
     @Override
     public int getSize() {
         return size;
     }
     
     // Returns the piece at the given row and column
-    // Throws IllegalArgumentException if the row or column is an negative interger, zero or out of bounds
-    // Should return PieceColour.NONE if the position is empty
     @Override
     public PieceColour getPiece(int row, int col) {
         if (row < 0 || col < 0) {
@@ -36,14 +35,12 @@ public class GridImpl implements Grid {
             throw new IllegalArgumentException("Row or column is out of bounds");
         }
         if (grid[row][col] == null) {
-            return PieceColour.NONE;
+            return PieceColour.NONE; // Returns PieceColour.NONE if the position is empty
         }
         return grid[row][col]; 
     }
 
     // Sets the piece at the given row and column
-    // Throws IllegalArgumentException if the row or column is an negative interger, zero or out of bounds
-    // Throws IllegalArgumentException if the piece is not a valid colour
     @Override
     public void setPiece(int row, int col, PieceColour piece) {
         if (row < 0|| col < 0) {
@@ -78,13 +75,17 @@ public class GridImpl implements Grid {
         StringBuilder stringbuilder = new StringBuilder();
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                if (grid[i][j] == PieceColour.WHITE) {
+                switch (grid[i][j]) {
+                case WHITE:
                     stringbuilder.append('W');
-                } else if (grid[i][j] == PieceColour.BLACK) {
+                    break;
+                case BLACK:
                     stringbuilder.append('B');
-                } else{
+                    break;
+                default:
                     stringbuilder.append('.');
-                }
+                    break;
+            }
             }
             stringbuilder.append('\n'); //start a new row when grid[i] ends
         }

@@ -4,9 +4,9 @@ public class MoveImpl implements Move {
     private final int row;
     private final int col;
 
-    // This is the constructor
+    // Constructor
     public MoveImpl(int row, int col) {
-        // Checks if the row and column are negative or zero
+        // Checks if the row and column are valid
         if (row < 0 || col < 0) {
             throw new IllegalArgumentException("Row and column can not be zero or negative.");
         }
@@ -14,7 +14,7 @@ public class MoveImpl implements Move {
         this.col = col;
     }
 
-    // Returns the row of the move
+    // Returns row
     @Override
     public int getRow() {
         return row;

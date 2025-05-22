@@ -19,7 +19,6 @@ public class GameImpl implements Game {
         this.winner = null;
     }
 
-    // True if the game is over
     // The game is over when there is a winner or there are no more moves (a draw)
     @Override
     public boolean isOver() {
@@ -33,10 +32,7 @@ public class GameImpl implements Game {
         return flag;
     }
 
-    // The colour of the winner.
-    // You should use the PathFinder class to determine the winner
-    // Should return PieceColour.NONE if the game is not over
-    // Should also return PieceColour.NONE if the game is a draw
+    // Returns the winner
     @Override
     public PieceColour winner() {
         if (winner == PieceColour.BLACK) {
@@ -45,24 +41,22 @@ public class GameImpl implements Game {
         if (winner == PieceColour.WHITE) {
             return PieceColour.WHITE;
         }  
-            return PieceColour.NONE;
+            return PieceColour.NONE; // No winner(game not over or draw)
     }
     
     // Returns the current player
-    // If the game is over, the output of this method does not matter
     @Override
     public PieceColour currentPlayer() {
         return currentPlayer;
     }
  
     // Returns a collection of all empty positions on the grid
-    // If there are no more valid moves, the collection will be empty
     @Override
     public Collection<Move> getMoves() {
         List<Move> moves = new ArrayList<>(); // List to store valid moves
         for (int i = 0; i < grid.getSize(); i++) {
             for (int j = 0; j < grid.getSize(); j++) {
-                // Add the position to the list of valid moves is it is empty
+                // Adds the position to the list of valid moves
                 if (grid.getPiece(i, j) == PieceColour.NONE) {
                     moves.add(new MoveImpl(i, j)); 
                 }
@@ -78,7 +72,7 @@ public class GameImpl implements Game {
         if (isOver()) {
             return;
         }
-        // Throws IllegalArgumentException if the move is null
+        // Throws IllegalArgumentException
         if (move == null) {
             throw new IllegalArgumentException("Move cannot be null");
         }
@@ -88,19 +82,18 @@ public class GameImpl implements Game {
         } else if(col < 0 || col >= grid.getSize()) {
             throw new IllegalArgumentException("The position is out of bounds");
         }
-        // Throws IllegalArgumentException if the position is invalid ( e.g. out of bounds or being occupied )
         if (grid.getPiece(row, col) != PieceColour.NONE) {
             throw new IllegalArgumentException("The position is already occupied");
         }
+        // Switches player from white to black or vice versa
         grid.setPiece(move.getRow(), move.getCol(), currentPlayer);
         PieceColour lastPlayer = currentPlayer;
-        // Switch player from white to black or vice versa
         if (currentPlayer == PieceColour.WHITE) {
             currentPlayer = PieceColour.BLACK;
         } else {
             currentPlayer = PieceColour.WHITE;
         }
-        // Check if the last player has won the game
+        // Checks if the last player wins the game
         if (PathFinder.topToBottom(grid, lastPlayer) || PathFinder.leftToRight(grid, lastPlayer)) {
             winner = lastPlayer;
         }
@@ -114,16 +107,14 @@ public class GameImpl implements Game {
     }
 
     // Returns a deep copy of the game
-    // The game returned should be a new object
     @Override
     public Game copy() {
         GameImpl deepcopy = new GameImpl(grid.getSize());
-        // Copy grid state
         for (int i = 0; i < grid.getSize(); i++) {
             for (int j = 0; j < grid.getSize(); j++) {
-                PieceColour piece = grid.getPiece(i, j);
+                PieceColour piece = grid.getPiece(i, j); // Get the piece at this position
                 if (piece != PieceColour.NONE) {
-                    deepcopy.getGrid().setPiece(i, j, piece);
+                    deepcopy.getGrid().setPiece(i, j, piece); //copy
                 }
             }
         }
