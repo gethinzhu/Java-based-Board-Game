@@ -69,7 +69,7 @@ public class GridImpl implements Grid {
     }
 
     // Returns a string representation of the grid
-    // The string should be like this: B = Black, W = White, . = Empty 
+    // The string should be like this: B = Black, W = White, . = None 
     @Override
     public String toString() {
         StringBuilder stringbuilder = new StringBuilder();
