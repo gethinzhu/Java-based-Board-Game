@@ -8,13 +8,13 @@ public class MoveImpl implements Move {
     public MoveImpl(int row, int col) {
         // Checks if the row and column are valid
         if (row < 0 || col < 0) {
-            throw new IllegalArgumentException("Row and column can not be zero or negative.");
+            throw new IllegalArgumentException("Row and column cannot be negative.");
         }
         this.row = row;
         this.col = col;
     }
 
-    // Returns row
+    // Returns the row of the move
     @Override
     public int getRow() {
         return row;
@@ -26,7 +26,6 @@ public class MoveImpl implements Move {
         return col;
     }
 
-    
     @Override
     public String toString() {
         return "(" + row + "," + col + ")";

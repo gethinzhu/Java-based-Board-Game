@@ -22,14 +22,14 @@ public class GameImpl implements Game {
     // The game is over when there is a winner or there are no more moves (a draw)
     @Override
     public boolean isOver() {
-        boolean flag = false;
+        boolean gameOver = false;
         if (winner != null) {
-            flag = true;
+            gameOver = true;
         }
         if (getMoves().isEmpty()) {
-            flag = true;
+            gameOver = true;
         }
-        return flag;
+        return gameOver;
     }
 
     // Returns the winner
@@ -68,7 +68,6 @@ public class GameImpl implements Game {
     // Executes a move for the current player
     @Override
     public void makeMove(Move move) {  
-        // If the game is over, let the result of this method is undefined
         if (isOver()) {
             return;
         }
@@ -79,13 +78,16 @@ public class GameImpl implements Game {
         int row = move.getRow(), col = move.getCol();
         if (row < 0 || row >= grid.getSize()) {
             throw new IllegalArgumentException("The position is out of bounds");
-        } else if(col < 0 || col >= grid.getSize()) {
+        } else if (col < 0 || col >= grid.getSize()) {
             throw new IllegalArgumentException("The position is out of bounds");
         }
+        // Cannot place a piece on an occupied position, even the game is over
         if (grid.getPiece(row, col) != PieceColour.NONE) {
-            throw new IllegalArgumentException("The position is already occupied");
+            throw new IllegalArgumentException("The position is already occupied"); 
         }
-        // Switches player from white to black or vice versa
+        // If the game is over, let the result of this method is undefined
+        
+        // Switches the player from white to black and vice versa
         grid.setPiece(move.getRow(), move.getCol(), currentPlayer);
         PieceColour lastPlayer = currentPlayer;
         if (currentPlayer == PieceColour.WHITE) {
@@ -110,12 +112,10 @@ public class GameImpl implements Game {
     @Override
     public Game copy() {
         GameImpl deepcopy = new GameImpl(grid.getSize());
+        Grid deepGrid = ((GameImpl) deepcopy).grid; // Casting
         for (int i = 0; i < grid.getSize(); i++) {
             for (int j = 0; j < grid.getSize(); j++) {
-                PieceColour piece = grid.getPiece(i, j); // Get the piece at this position
-                if (piece != PieceColour.NONE) {
-                    deepcopy.getGrid().setPiece(i, j, piece); //copy
-                }
+                    deepGrid.setPiece(i, j, grid.getPiece(i, j)); //deep copy
             }
         }
         deepcopy.currentPlayer = this.currentPlayer;

@@ -21,6 +21,22 @@ public class GameTest extends Test {
         expect(false, caught);
 
         // TODO: Complete this test
+        // Test GameImpl with negative sizes
+        caught = false;
+        try {
+            new GameImpl(-1);
+        } catch (IllegalArgumentException e) {
+            caught = true;
+        }
+        expect(true, caught);
+        // Test GameImpl with large sizes
+        caught = false;
+        try {
+            new GameImpl(100);
+        } catch (IllegalArgumentException e) {
+            caught = true;
+        }
+        expect(false, caught);
 
         // Initialize the game with a 5x5 grid
         Game game = new GameImpl(5);
@@ -42,7 +58,6 @@ public class GameTest extends Test {
         expect(PieceColour.WHITE, game.getGrid().getPiece(0, 0)); // White piece placed at (0, 0)
         expect(24, game.getMoves().size()); // There should be 24 moves left
 
-
         // Test some invalid moves
         // Test whether it throws an exception when the move is null
         caught = false;
@@ -52,7 +67,14 @@ public class GameTest extends Test {
             caught = true;
         }
         expect(true, caught);
-        // When the move is out of bounds or occupied
+        // Throw exceptions when the move is out of bounds or occupied
+        caught = false;
+        try {
+            game.makeMove(new MoveImpl(-1, -1)); // out of bounds
+        } catch (IllegalArgumentException e) {
+            caught = true;
+        }
+        expect(true, caught);
         caught = false;
         try {
             game.makeMove(new MoveImpl(-1, 0)); // out of bounds
@@ -75,9 +97,9 @@ public class GameTest extends Test {
         }
         expect(true, caught);
 
-
         // Test White winning (left to right)
         game.makeMove(new MoveImpl(4, 0)); // Black
+        expect(23, game.getMoves().size()); // There should be left 16 moves(25-2)
         game.makeMove(new MoveImpl(0, 1)); // White
         expect(PieceColour.NONE, game.winner()); // No winner right now
         game.makeMove(new MoveImpl(4, 1)); // Black
@@ -89,13 +111,13 @@ public class GameTest extends Test {
         expect(PieceColour.WHITE, game.winner()); //Winner should be White
         expect(true, game.isOver()); // the game is over
         expect(16, game.getMoves().size()); // There should be left 16 moves(25-9)
+
         // Test whether the game is truly over and behaivior of copy
-        PieceColour whiteWinner = game.winner();
         Game copyGame1 = game.copy();
-        game.makeMove(new MoveImpl(4, 4)); // Let the Black connect 5 pieces
-        expect(whiteWinner, game.winner()); // The winner should still be White
+        game.makeMove(new MoveImpl(4, 4)); // Try to let the Black connect 5 pieces
+        expect(PieceColour.WHITE, game.winner()); // The winner should still be White
         expect(PieceColour.NONE, game.getGrid().getPiece(4, 4)); // The original one is unchanged
-        copyGame1.makeMove(new MoveImpl(1, 0)); // Modify copy
+        copyGame1.makeMove(new MoveImpl(4, 4)); // Modify copy
         expect(PieceColour.WHITE, game.winner()); // Original unchanged
         expect(PieceColour.WHITE, copyGame1.winner()); // Copy winner should be the same
         expect(true, copyGame1.isOver()); // Copy should be over
@@ -105,24 +127,26 @@ public class GameTest extends Test {
         expect(PieceColour.WHITE, game2.currentPlayer()); // White starts first
         game2.makeMove(new MoveImpl(0, 0)); // White 
         game2.makeMove(new MoveImpl(0, 4)); // Black
-        game2.makeMove(new MoveImpl(0, 1)); // White
+        game2.makeMove(new MoveImpl(1, 0)); // White
         game2.makeMove(new MoveImpl(1, 4)); // Black
-        game2.makeMove(new MoveImpl(0, 2)); // White
+        game2.makeMove(new MoveImpl(2, 0)); // White
         game2.makeMove(new MoveImpl(2, 4)); // Black
-        game2.makeMove(new MoveImpl(0, 3)); // White
+        game2.makeMove(new MoveImpl(3, 0)); // White
         game2.makeMove(new MoveImpl(3, 4)); // Black
         game2.makeMove(new MoveImpl(3, 3)); // White
         game2.makeMove(new MoveImpl(4, 4)); // Black wins the game (0,4 to 4,4)
         expect(PieceColour.BLACK, game2.winner());
         expect(true, game2.isOver());
         expect(15, game2.getMoves().size()); // There should be left 15 moves (25-10)
-        // Test whether the game is truly over
-        PieceColour blackWinner = game2.winner();
-        game2.makeMove(new MoveImpl(0, 4)); // This move should not generate another winner
-        expect(blackWinner, game2.winner());
+
+        // Test whether the game2 is truly over
+        game2.makeMove(new MoveImpl(4, 0)); // This move should not change the result
+        expect(PieceColour.BLACK, game2.winner()); // The winner should still be Black
+        expect(PieceColour.NONE, game2.getGrid().getPiece(4, 0)); // The original one is unchanged
+        expect(true, game2.isOver());
 
         // Test game on a 3x3 grid
-        // The author plays this with his friend
+        // The author plays this with the author's friend
         // SO this is a real recorded game
         // Of course, the author wins
         Game game3 = new GameImpl(3);
@@ -139,8 +163,6 @@ public class GameTest extends Test {
         expect(true, game3.isOver());
         expect(PieceColour.WHITE, game3.winner());
         expect(0, game3.getMoves().size()); // There should be left 0 moves(5 White + 4 Black)
-        
-
 
         // Test draw game on a 2x2 grid
         Game game4 = new GameImpl(2);
@@ -152,8 +174,9 @@ public class GameTest extends Test {
         expect(true, game4.isOver()); 
         expect(PieceColour.NONE, game4.winner());
         expect(0, game4.getMoves().size()); // There should be left 0 moves (2 White + 2 Black)
-
+        
         // Test 1x1 grid
+        // Beat someone to the punch
         Game game5 = new GameImpl(1);
         expect(PieceColour.WHITE, game5.currentPlayer()); // Test whether White starts first
         game5.makeMove(new MoveImpl(0, 0)); // White
@@ -162,15 +185,15 @@ public class GameTest extends Test {
         expect(0, game5.getMoves().size()); // There should be left 0 moves (1 White)
 
         // Test deep copy of the game
-        Game copyGame2 = new GameImpl(5);
-        copyGame2.makeMove(new MoveImpl(0, 0)); // White moves in copyGame2
-        Game copyGame3 = copyGame2.copy();
-        copyGame3.makeMove(new MoveImpl(0, 1)); // Black moves in copyGame3
-        expect(PieceColour.NONE, copyGame2.getGrid().getPiece(0, 1)); // Original unchanged
-        expect(PieceColour.BLACK, copyGame3.getGrid().getPiece(0, 1)); // Copy changed
-        expect(PieceColour.WHITE, copyGame3.currentPlayer()); // Copy state updated
-        expect(PieceColour.BLACK, copyGame2.currentPlayer()); // Original state unchanged
-        
+        Game game6 = new GameImpl(5);
+        game6.makeMove(new MoveImpl(0, 0)); // White moves in copyGame2
+        Game copyGame2 = game6.copy();
+        copyGame2.makeMove(new MoveImpl(0, 1)); // Black moves in copyGame3
+        expect(PieceColour.NONE, game6.getGrid().getPiece(0, 1)); // Original unchanged
+        expect(PieceColour.BLACK, copyGame2.getGrid().getPiece(0, 1)); // Copy changed
+        expect(PieceColour.WHITE, copyGame2.currentPlayer()); // Copy state updated
+        expect(PieceColour.BLACK, game6.currentPlayer()); // Original state unchanged
+
         checkAllTestsPassed();
     }
 }
