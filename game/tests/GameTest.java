@@ -21,6 +21,7 @@ public class GameTest extends Test {
         expect(false, caught);
 
         // TODO: Complete this test
+        
         // Test the GameImpl class
         // Initialize the game with a 5x5 grid
         Game game = new GameImpl(5);
@@ -161,6 +162,10 @@ public class GameTest extends Test {
         expect(PieceColour.BLACK, copyGame3.getGrid().getPiece(0, 1)); // Copy changed
         expect(PieceColour.WHITE, copyGame3.currentPlayer()); // Copy state updated
         expect(PieceColour.BLACK, copyGame2.currentPlayer()); // Original state unchanged
+        System.out.println(game.getGrid());
+        System.out.println(game2.getGrid());
+        System.out.println(game3.getGrid());
+        System.out.println(game4.getGrid());
         checkAllTestsPassed();
     }
 }
