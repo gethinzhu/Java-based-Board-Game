@@ -6,6 +6,7 @@ This project developed a Java-based two-player grid-based board game, implementi
 It includes move validation to prevent invalid actions (null, out-of-bounds, or occupied positions), a player-switching mechanism between White and Black, 
 and win detection for consecutive pieces horizontally or vertically (adjusted for different size boards). 
 The system also features deep copy functionality to ensure game state integrity and independence between copies.
+！！！please neglect the .class files.
 
 ## Installation
 1. **Clone the Repository**:
